@@ -3,6 +3,7 @@
 class DuplicatesController extends BaseController {
 	public function __construct() {
 		$this->bugzilla = new Bugzilla();
+		$this->NLP = new NLP();
     }
 
 	public function index() {
