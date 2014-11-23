@@ -1,10 +1,12 @@
 <?php
 
 class DuplicatesController extends BaseController {
+	
 	public function __construct() {
-		$this->bugzilla = new Bugzilla();
 		$this->NLP = new NLP();
-    }
+    	$this->BM25F = new BM25F();
+		$this->bugzilla = new Bugzilla();
+	}
 
 	public function index() {
 		$bugs = Input::get('bugs', false);
@@ -26,6 +28,7 @@ class DuplicatesController extends BaseController {
 
 		return $this->makeSuccess($bugs);
 	}
+
 
 
 	private function makeError( $content = "" ) {
