@@ -27,18 +27,22 @@ class DuplicatesController extends BaseController {
 		$bugs = $this->bugzilla->retrieveByIds( $bugs );
 
 		foreach ($bugs as $key => $bug) {
-			$processedSummary = $this->NLP->tokenization($bug->summary);
+			$processedSummary = $bug->summary;
+
+			$processedSummary = $this->NLP->tokenization($processedSummary);
 			$processedSummary = $this->NLP->stemming($processedSummary);
 			$processedSummary = $this->NLP->stopWordsRemoval($processedSummary);
 
-			$bugs[$key]->processedBug = array(
-				"summary" => $processedSummary,
-				"product" => $bug->product,
-				"component" => $bug->component
-			);
+			$bugs[$key]->processedSummary = $processedSummary;
 		}
 
-		return $this->makeSuccess($bugs);
+		$output = array();
+
+		foreach ($bugs as $key => $bug) {
+			$output[] = new DuplicateGroup(array(), $bug->processedSummary);
+		} 
+
+		return $this->makeSuccess($output);
 	}
 
 
@@ -65,5 +69,15 @@ class DuplicatesController extends BaseController {
 		$response = Response::make($content, "200");
 		$response->header('Content-Type', 'application/json');
 		return $response;
+	}
+}
+
+class DuplicateGroup {
+	public function __construct(	$bugs = array(), 
+									$keywords = array(), 
+									$similarity = 0.0) {
+		$this->bugs = $bugs;
+		$this->keywords = $keywords;
+		$this->similarity = $similarity;
 	}
 }
