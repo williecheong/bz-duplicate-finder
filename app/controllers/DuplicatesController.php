@@ -26,6 +26,18 @@ class DuplicatesController extends BaseController {
 
 		$bugs = $this->bugzilla->retrieveByIds( $bugs );
 
+		foreach ($bugs as $key => $bug) {
+			$processedSummary = $this->NLP->tokenization($bug->summary);
+			$processedSummary = $this->NLP->stemming($processedSummary);
+			$processedSummary = $this->NLP->stopWordsRemoval($processedSummary);
+
+			$bugs[$key]->processedBug = array(
+				"summary" => $processedSummary,
+				"product" => $bug->product,
+				"component" => $bug->component
+			);
+		}
+
 		return $this->makeSuccess($bugs);
 	}
 
