@@ -9,6 +9,7 @@ class DuplicatesController extends BaseController {
 	}
 
 	public function index() {
+		/* Input retrieval and validation */
 		$bugs = Input::get('bugs', false);
 		
 		if ( $bugs == false ) {
@@ -23,9 +24,11 @@ class DuplicatesController extends BaseController {
 				return $this->makeError("Specified bug IDs must be numeric");
 			}
 		}
-
+		
+		/* Bug retrieval from Bugzilla */
 		$bugs = $this->bugzilla->retrieveByIds( $bugs );
 
+		/*	Converting each bug into a bag of words */
 		foreach ($bugs as $key => $bug) {
 			$processedSummary = $bug->summary;
 
@@ -35,14 +38,36 @@ class DuplicatesController extends BaseController {
 
 			$bugs[$key]->processedSummary = $processedSummary;
 		}
+		
+		/* Similarity pairing between bugs */
+		$similarityPairings = array();
+		foreach ($bugs as $i => $bugI) {
+			$similarityPairings[$bugI->id] = array();
 
-		$output = array();
+			foreach ($bugs as $j => $bugJ) {
+				if ( $bugJ->id == $bugI->id ) {
+					break;
+				}
 
-		foreach ($bugs as $key => $bug) {
-			$output[] = new DuplicateGroup(array(), $bug->processedSummary);
-		} 
+				$similarityPairings[$bugI->id][$bugJ->id] = $this->BM25F->similarityCheck(
+					$bugI->processedSummary, 
+					$bugJ->processedSummary
+				);
+			}
+		}
 
-		return $this->makeSuccess($output);
+		/* Forming duplicate groups based on similarity pairings */
+		$groups = array();
+		foreach ($similarityPairings as $idI => $pairings) {
+			foreach ($pairings as $idJ => $similarity) {
+				if ($similarity > Config::get('constants.TOLERANCE')) {
+					$groups[] = array($idI, $idJ);
+				}
+			}
+		}
+
+
+		return $this->makeSuccess($groups);
 	}
 
 

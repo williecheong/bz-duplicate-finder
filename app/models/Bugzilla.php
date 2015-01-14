@@ -3,7 +3,8 @@
 class Bugzilla {
 
     public function retrieveByIds( $bugIds = array() ) {
-        $url = 'https://bugzilla.mozilla.org/rest/bug?bug_id=';
+        $fields = 'id,summary,product,component';
+        $url = 'https://bugzilla.mozilla.org/rest/bug?include_fields='.$fields.'&bug_id=';
         $query = implode(',', $bugIds);
         $fullUrl = $url . $query;
 

@@ -17,6 +17,11 @@ use \NlpTools\Stemmers\PorterStemmer;
 use \NlpTools\Stemmers\RegexStemmer;
 
 /**********
+    * Stop Words Removal
+**********/
+use \NlpTools\Utils\StopWords;
+
+/**********
     * Clustering
 **********/
 use NlpTools\Clustering\KMeans;
@@ -38,6 +43,7 @@ class NLP {
     public function __construct() {
         $this->tokenizer = new WhitespaceTokenizer();
         $this->stemmer = new GreekStemmer();
+        $this->stopWords = new StopWords(Config::get('constants.STOP_WORDS'));
     }
 
     public function tokenization( $input ) {
@@ -73,7 +79,13 @@ class NLP {
     }
 
     public function stopWordsRemoval( $inputArray ) {
-        return $inputArray;
+        $output = array();
+        foreach ( $inputArray as $token ) {
+            if ( !is_null($this->stopWords->transform($token)) ) {
+                $output[] = $token;
+            }
+        } 
+        return $output;
     }
 
     public function spellCheck( $inputArray ) {
