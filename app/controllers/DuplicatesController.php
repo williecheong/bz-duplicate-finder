@@ -60,17 +60,19 @@ class DuplicatesController extends BaseController {
 		}
 
 		/* Forming duplicate groups based on similar pairs */
-		$similarPairs = array(
-			array(1, 2),
-			array(1, 3),
-			array(1, 4),
-			array(2, 3),
-			array(21, 4)
-		);
 		$groups = $this->grouper->execute($similarPairs);
 
+		/* Preparing the final outputs */
+		$output = array();
+		foreach ($groups as $group) {
+			$output[] = new DuplicateGroup(
+				$group,
+				array("keyword1", "keyword2", "keyword3"),
+				mt_rand(Config::get('constants.TOLERANCE')*100, 99) + mt_rand(0,100)/100 
+			);
+		}
 
-		return $this->makeSuccess($groups);
+		return $this->makeSuccess($output);
 	}
 
 
