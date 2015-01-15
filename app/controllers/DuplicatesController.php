@@ -3,9 +3,10 @@
 class DuplicatesController extends BaseController {
 	
 	public function __construct() {
+		$this->bugzilla = new Bugzilla();
 		$this->NLP = new NLP();
     	$this->BM25F = new BM25F();
-		$this->bugzilla = new Bugzilla();
+		$this->grouper = new Grouper();
 	}
 
 	public function index() {
@@ -39,32 +40,34 @@ class DuplicatesController extends BaseController {
 			$bugs[$key]->processedSummary = $processedSummary;
 		}
 		
-		/* Similarity pairing between bugs */
-		$similarityPairings = array();
+		/* Finding similar pairs of bugs */
+		$similarPairs = array();
 		foreach ($bugs as $i => $bugI) {
-			$similarityPairings[$bugI->id] = array();
-
 			foreach ($bugs as $j => $bugJ) {
 				if ( $bugJ->id == $bugI->id ) {
 					break;
 				}
 
-				$similarityPairings[$bugI->id][$bugJ->id] = $this->BM25F->similarityCheck(
+				$similarity = $this->BM25F->similarityCheck(
 					$bugI->processedSummary, 
 					$bugJ->processedSummary
 				);
-			}
-		}
 
-		/* Forming duplicate groups based on similarity pairings */
-		$groups = array();
-		foreach ($similarityPairings as $idI => $pairings) {
-			foreach ($pairings as $idJ => $similarity) {
 				if ($similarity > Config::get('constants.TOLERANCE')) {
-					$groups[] = array($idI, $idJ);
+					$similarPairs[] = array($bugI->id, $bugJ->id);
 				}
 			}
 		}
+
+		/* Forming duplicate groups based on similar pairs */
+		$similarPairs = array(
+			array(1, 2),
+			array(1, 3),
+			array(1, 4),
+			array(2, 3),
+			array(21, 4)
+		);
+		$groups = $this->grouper->execute($similarPairs);
 
 
 		return $this->makeSuccess($groups);
