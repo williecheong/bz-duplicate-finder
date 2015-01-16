@@ -4,8 +4,7 @@ class DuplicatesController extends BaseController {
 	
 	public function __construct() {
 		$this->bugzilla = new Bugzilla();
-		$this->NLP = new NLP();
-    	$this->similarity = new Similarity();
+		$this->processor = new Processor();
 		$this->grouper = new Grouper();
 	}
 
@@ -33,40 +32,23 @@ class DuplicatesController extends BaseController {
 		}
 
 		/*	Converting each bug into a bag of words */
-
 		foreach ($bugs as $key => $bug) {
 			$processedSummary = $bug->summary;
 
-			$processedSummary = $this->NLP->tokenization($processedSummary);
-			$processedSummary = $this->NLP->stemming($processedSummary);
-			$processedSummary = $this->NLP->stopWordsRemoval($processedSummary);
-			$processedSummary = $this->NLP->spellCheck($processedSummary);
-			$processedSummary = $this->NLP->synonymReplacement($processedSummary);
-						
+			$processedSummary = $this->processor->tokenization($processedSummary);
+			$processedSummary = $this->processor->stemming($processedSummary);
+			$processedSummary = $this->processor->stopWordsRemoval($processedSummary);
+			$processedSummary = $this->processor->spellCheck($processedSummary);
+			$processedSummary = $this->processor->synonymReplacement($processedSummary);
+
 			$bugs[$key]->processedSummary = $processedSummary;
 		}
 		
 		/* Finding similar pairs of bugs */
-		$similarPairs = array();
-		foreach ($bugs as $bugI) {
-			foreach ($bugs as $bugJ) {
-				if ( $bugJ->id == $bugI->id ) {
-					break;
-				}
-
-				$similarity = $this->similarity->jaccardIndex(
-					$bugI->processedSummary, 
-					$bugJ->processedSummary
-				);
-
-				if ($similarity > Config::get('constants.TOLERANCE')) {
-					$similarPairs[] = array($bugI->id, $bugJ->id);
-				}
-			}
-		}
+		$similarPairs = $this->grouper->getSimilarPairsFromProcessedBugs($bugs);
 
 		/* Forming duplicate groups based on similar pairs */
-		$groups = $this->grouper->execute($similarPairs);
+		$groups = $this->grouper->clusterPairsToGroups($similarPairs);
 
 		/* Preparing the final outputs */
 		$output = array();
@@ -78,8 +60,8 @@ class DuplicatesController extends BaseController {
 
 			$output[] = new DuplicateGroup(
 				$group,
-				$this->NLP->getIntersectingTokens($tokensOfEachBugInTheGroup),
-				$this->NLP->getAverageSimilarity($tokensOfEachBugInTheGroup)
+				$this->grouper->getIntersectingTokens($tokensOfEachBugInTheGroup),
+				$this->grouper->getAverageSimilarity($tokensOfEachBugInTheGroup)
 			);
 		}
 
