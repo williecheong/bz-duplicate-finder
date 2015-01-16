@@ -74,6 +74,7 @@ class NLP {
             foreach ($tokens as $key => $token) {
                 if (!pspell_check($pspell_link, $token)) {
                     $suggestions = pspell_suggest($pspell_link, $token);
+                    dd($suggestions);
                     if (isset($suggestions[0])) {
                         $tokens[$key] = $suggestions[0];
                     }
