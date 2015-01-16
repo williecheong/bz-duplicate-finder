@@ -23,6 +23,10 @@ class NLP {
         $this->stemmer = new PorterStemmer();
         $this->stopWords = new StopWords(Config::get('constants.STOP_WORDS'));
         $this->similarity = new Similarity();
+        
+        if (function_exists('pspell_new')) {
+            $this->pspell_link = pspell_new('en_US', 'american');
+        }
     }
 
     public function tokenization( $inputString ) {
@@ -68,11 +72,10 @@ class NLP {
     }
 
     public function spellCheck( $tokens ) {
-        if (function_exists('pspell_new')) {
-            $pspell_link = pspell_new('en', 'american');
+        if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
-                if (!pspell_check($pspell_link, $token)) {
-                    $suggestions = pspell_suggest($pspell_link, $token);
+                if (!pspell_check($this->pspell_link, $token)) {
+                    $suggestions = pspell_suggest($this->pspell_link, $token);
                     foreach ($suggestions as $suggestion) {
                         if (ctype_alpha($suggestion)) {
                             // Only accept the suggested word if it looks normal
