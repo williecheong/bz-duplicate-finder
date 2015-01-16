@@ -75,9 +75,8 @@ class NLP {
                 if (!pspell_check($pspell_link, $token)) {
                     $suggestions = pspell_suggest($pspell_link, $token);
                     foreach ($suggestions as $suggestion) {
-                        $words = explode(" ", $suggestion);
-                        if (count($words) == 1) {
-                            // Only accept the suggested word if it is a single word
+                        if (ctype_alpha($suggestion)) {
+                            // Only accept the suggested word if it looks normal
                             $tokens[$key] = $suggestion;
                         }
                     }
