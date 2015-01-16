@@ -68,9 +68,8 @@ class NLP {
     }
 
     public function spellCheck( $tokens ) {
-        if (function_exists('pspell_config_create')) {
-            $pspell_config = pspell_config_create("en");
-            $pspell_link = pspell_new_config($pspell_config);
+        if (function_exists('pspell_new')) {
+            $pspell_link = pspell_new('en', 'american');
             foreach ($tokens as $key => $token) {
                 if (!pspell_check($pspell_link, $token)) {
                     $suggestions = pspell_suggest($pspell_link, $token);
