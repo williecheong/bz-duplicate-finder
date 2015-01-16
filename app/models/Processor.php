@@ -16,7 +16,7 @@ use \NlpTools\Stemmers\PorterStemmer;
 **********/
 use \NlpTools\Utils\StopWords;
 
-class Processor {
+class Processor { // This is obviously the core natural language processor class
     
     public function __construct() {
         $this->tokenizer = new WhitespaceAndPunctuationTokenizer();
