@@ -48,18 +48,18 @@ class DuplicatesController extends BaseController {
 		$similarPairs = $this->grouper->getSimilarPairsFromProcessedBugs($bugs);
 
 		/* Forming duplicate groups based on similar pairs */
-		$groups = $this->grouper->clusterPairsToGroups($similarPairs);
+		$groupsAsBugIds = $this->grouper->clusterPairsToGroups($similarPairs);
 
 		/* Preparing the final outputs */
 		$output = array();
-		foreach ($groups as $group) {
+		foreach ($groupsAsBugIds as $groupAsBugIds) {
 			$tokensOfEachBugInTheGroup = array();
-			foreach ($group as $bugId) {
+			foreach ($groupAsBugIds as $bugId) {
 				$tokensOfEachBugInTheGroup[$bugId] = $bugs[$bugId]->processedSummary;
 			}
 
 			$output[] = new DuplicateGroup(
-				$group,
+				$groupAsBugIds,
 				$this->grouper->getIntersectingTokens($tokensOfEachBugInTheGroup),
 				$this->grouper->getAverageSimilarity($tokensOfEachBugInTheGroup)
 			);
