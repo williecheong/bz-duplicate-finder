@@ -18,8 +18,14 @@ class Bugzilla {
         if ( !isset($response->bugs) ) {
             return false;
         }
-    
-        return $response->bugs;
+        
+        /* Make the returned list of bugs an associative array by Id */
+        $tempBugs = array();
+        foreach ($response->bugs as $bug) {
+            $tempBugs[$bug->id] = $bug;
+        }
+
+        return $tempBugs;
     }
 
 

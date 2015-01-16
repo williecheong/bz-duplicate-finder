@@ -5,7 +5,7 @@ class DuplicatesController extends BaseController {
 	public function __construct() {
 		$this->bugzilla = new Bugzilla();
 		$this->NLP = new NLP();
-    	$this->BM25F = new BM25F();
+    	$this->similarity = new Similarity();
 		$this->grouper = new Grouper();
 	}
 
@@ -28,8 +28,12 @@ class DuplicatesController extends BaseController {
 		
 		/* Bug retrieval from Bugzilla */
 		$bugs = $this->bugzilla->retrieveByIds( $bugs );
+		if ($bugs == false) {
+			return $this->makeError("Failed to retrieve bugs from Bugzilla");
+		}
 
 		/*	Converting each bug into a bag of words */
+
 		foreach ($bugs as $key => $bug) {
 			$processedSummary = $bug->summary;
 
@@ -42,13 +46,13 @@ class DuplicatesController extends BaseController {
 		
 		/* Finding similar pairs of bugs */
 		$similarPairs = array();
-		foreach ($bugs as $i => $bugI) {
-			foreach ($bugs as $j => $bugJ) {
+		foreach ($bugs as $bugI) {
+			foreach ($bugs as $bugJ) {
 				if ( $bugJ->id == $bugI->id ) {
 					break;
 				}
 
-				$similarity = $this->BM25F->similarityCheck(
+				$similarity = $this->similarity->jaccardIndex(
 					$bugI->processedSummary, 
 					$bugJ->processedSummary
 				);
@@ -65,10 +69,15 @@ class DuplicatesController extends BaseController {
 		/* Preparing the final outputs */
 		$output = array();
 		foreach ($groups as $group) {
+			$tokensOfEachBugInTheGroup = array();
+			foreach ($group as $bugId) {
+				$tokensOfEachBugInTheGroup[$bugId] = $bugs[$bugId]->processedSummary;
+			}
+
 			$output[] = new DuplicateGroup(
 				$group,
-				array("keyword1", "keyword2", "keyword3"),
-				mt_rand(Config::get('constants.TOLERANCE')*100, 99) + mt_rand(0,100)/100 
+				$this->NLP->getIntersectingTokens($tokensOfEachBugInTheGroup),
+				$this->NLP->getAverageSimilarity($tokensOfEachBugInTheGroup)
 			);
 		}
 
