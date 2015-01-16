@@ -68,13 +68,18 @@ class NLP {
     }
 
     public function spellCheck( $tokens ) {
-        $pspell_link = pspell_new("en");
-        foreach ($tokens as $token) {
-            if (pspell_check($pspell_link, $token)) {
-                
+        if (function_exists('pspell_config_create(language)')) {
+            $pspell_config = pspell_config_create("en");
+            $pspell_link = pspell_new_config($pspell_config);
+            foreach ($tokens as $key => $token) {
+                if (!pspell_check($pspell_link, $token)) {
+                    $suggestions = pspell_suggest($pspell_link, $token);
+                    if (isset($suggestions[0])) {
+                        $tokens[$key] = $suggestions[0];
+                    }
+                }
             }
         }
-
         return $tokens;
     }
 
