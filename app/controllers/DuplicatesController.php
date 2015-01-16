@@ -67,32 +67,6 @@ class DuplicatesController extends BaseController {
 
 		return $this->makeSuccess($output);
 	}
-
-
-
-	private function makeError( $content = "" ) {
-		if ( is_string($content) ) {
-			$content = array(
-				"message" => $content
-			);
-		} 
-
-		$response = Response::make($content, "400");
-		$response->header('Content-Type', 'application/json');
-		return $response;
-	}
-
-	private function makeSuccess( $content = "" ) {
-		if ( is_string($content) ) {
-			$content = array(
-				"message" => $content
-			);
-		}
-
-		$response = Response::make($content, "200");
-		$response->header('Content-Type', 'application/json');
-		return $response;
-	}
 }
 
 class DuplicateGroup {

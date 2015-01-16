@@ -16,4 +16,6 @@ Route::get('/', function() {
 });
 
 Route::resource('duplicates', 'DuplicatesController');
-Route::resource('info', 'InformationController');
+
+Route::get('debug/grouping', 'DebugController@grouping');
+Route::resource('debug', 'DebugController');
