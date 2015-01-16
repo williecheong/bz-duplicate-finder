@@ -19,30 +19,20 @@ class DuplicatesController extends BaseController {
 		$bugs = str_replace(" ", "", $bugs);
 		$bugs = explode(',', $bugs);
 		
-		foreach ($bugs as $key => $bug) {
+		foreach ($bugs as $bug) {
 			if ( !ctype_digit($bug) ) {
 				return $this->makeError("Specified bug IDs must be numeric");
 			}
 		}
 		
-		/* Bug retrieval from Bugzilla */
+		/* Bug retrieval from Bugzilla as an associative array by BugId */
 		$bugs = $this->bugzilla->retrieveByIds( $bugs );
 		if ($bugs == false) {
 			return $this->makeError("Failed to retrieve bugs from Bugzilla");
 		}
 
 		/*	Converting each bug into a bag of words */
-		foreach ($bugs as $key => $bug) {
-			$processedSummary = $bug->summary;
-
-			$processedSummary = $this->processor->tokenization($processedSummary);
-			$processedSummary = $this->processor->stemming($processedSummary);
-			$processedSummary = $this->processor->stopWordsRemoval($processedSummary);
-			$processedSummary = $this->processor->spellCheck($processedSummary);
-			$processedSummary = $this->processor->synonymReplacement($processedSummary);
-
-			$bugs[$key]->processedSummary = $processedSummary;
-		}
+		$bugs = $this->processor->executeAll($bugs);
 		
 		/* Finding similar pairs of bugs */
 		$similarPairs = $this->grouper->getSimilarPairsFromProcessedBugs($bugs);
@@ -58,23 +48,13 @@ class DuplicatesController extends BaseController {
 				$tokensOfEachBugInTheGroup[$bugId] = $bugs[$bugId]->processedSummary;
 			}
 
-			$output[] = new DuplicateGroup(
-				$groupAsBugIds,
-				$this->grouper->getIntersectingTokens($tokensOfEachBugInTheGroup),
-				$this->grouper->getAverageSimilarity($tokensOfEachBugInTheGroup)
+			$output[] = array(
+				"bugs" => $groupAsBugIds,
+				"keywords" => $this->grouper->getIntersectingTokens($tokensOfEachBugInTheGroup),
+				"similarity" => $this->grouper->getAverageSimilarity($tokensOfEachBugInTheGroup)
 			);
 		}
 
 		return $this->makeSuccess($output);
-	}
-}
-
-class DuplicateGroup {
-	public function __construct(	$bugs = array(), 
-									$keywords = array(), 
-									$similarity = 0.0) {
-		$this->bugs = $bugs;
-		$this->keywords = $keywords;
-		$this->similarity = $similarity;
 	}
 }
