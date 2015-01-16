@@ -40,7 +40,9 @@ class DuplicatesController extends BaseController {
 			$processedSummary = $this->NLP->tokenization($processedSummary);
 			$processedSummary = $this->NLP->stemming($processedSummary);
 			$processedSummary = $this->NLP->stopWordsRemoval($processedSummary);
-
+			$processedSummary = $this->NLP->spellCheck($processedSummary);
+			$processedSummary = $this->NLP->synonymReplacement($processedSummary);
+						
 			$bugs[$key]->processedSummary = $processedSummary;
 		}
 		

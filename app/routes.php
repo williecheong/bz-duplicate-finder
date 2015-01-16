@@ -16,3 +16,4 @@ Route::get('/', function() {
 });
 
 Route::resource('duplicates', 'DuplicatesController');
+Route::resource('info', 'InformationController');
