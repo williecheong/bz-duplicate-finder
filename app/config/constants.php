@@ -1,7 +1,7 @@
 <?php 	//file : app/config/constants.php
 
 return array(
-	"TOLERANCE" => 0.01, // Higher value makes it harder to match for duplicity
+	"SIMILARITY_REQUIREMENT" => 0.01, // Higher value makes it harder to match for duplicity
 	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words
 		"a",
 		"a's",

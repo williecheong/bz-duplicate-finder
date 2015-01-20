@@ -19,7 +19,7 @@ class Grouper {
                     $bugJ->processedSummary
                 );
 
-                if ($similarity > Config::get('constants.TOLERANCE')) {
+                if ($similarity > Config::get('constants.SIMILARITY_REQUIREMENT')) {
                     $similarPairs[] = array($bugI->id, $bugJ->id);
                 }
             }

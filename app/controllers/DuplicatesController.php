@@ -69,6 +69,7 @@ class DuplicatesController extends BaseController {
 		$output = array();
 		$output["duplicates"] = $duplicateGroups;
 		if ($outputVerbose) {
+			$output["similarityRequirement"] = Config::get('constants.SIMILARITY_REQUIREMENT');
 			$output["runtimeInSeconds"] = $timeStop - $timeStart;
 			$output["inputBugCount"] = count($bugs);
 			$output["useProcessor"] = array(
