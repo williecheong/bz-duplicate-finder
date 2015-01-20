@@ -3,6 +3,7 @@
 class DuplicatesController extends BaseController {
 	
 	public function __construct() {
+		set_time_limit(0); // no limit to processing, avoid fatal error
 		$this->bugzilla = new Bugzilla();
 		$this->processor = new Processor();
 		$this->grouper = new Grouper();
