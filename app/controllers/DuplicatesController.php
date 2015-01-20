@@ -10,7 +10,15 @@ class DuplicatesController extends BaseController {
 	}
 
 	public function index() {
-		/* Input retrieval and validation */
+		/* Initialize timer and retrieve processor switches if any */
+		$timeStart = microtime(true);
+		$useStemming = Input::get('stemming', true) ? true : false;
+		$useStopWordsRemoval = Input::get('stopWordsRemoval', true) ? true : false;
+		$useSpellCheck = Input::get('spellCheck', true) ? true : false;
+		$useSynonymReplacement = Input::get('synonymReplacement', true) ? true : false;
+		$outputVerbose = Input::get('debug', false) ? true : false;
+
+		/* Input bug retrieval and validation */
 		$bugs = Input::get('bugs', false);
 		
 		if ( $bugs == false ) {
@@ -42,17 +50,32 @@ class DuplicatesController extends BaseController {
 		$groupsAsBugIds = $this->grouper->clusterPairsToGroups($similarPairs);
 
 		/* Preparing the final outputs */
-		$output = array();
+		$duplicateGroups = array();
 		foreach ($groupsAsBugIds as $groupAsBugIds) {
 			$tokensOfEachBugInTheGroup = array();
 			foreach ($groupAsBugIds as $bugId) {
 				$tokensOfEachBugInTheGroup[$bugId] = $bugs[$bugId]->processedSummary;
 			}
 
-			$output[] = array(
+			$duplicateGroups[] = array(
 				"bugs" => $groupAsBugIds,
 				"keywords" => $this->grouper->getIntersectingTokens($tokensOfEachBugInTheGroup),
 				"similarity" => $this->grouper->getAverageSimilarity($tokensOfEachBugInTheGroup)
+			);
+		}
+
+		$timeStop = microtime(true);
+
+		$output = array();
+		$output["duplicates"] = $duplicateGroups;
+		if ($outputVerbose) {
+			$output["runtimeInSeconds"] = $timeStop - $timeStart;
+			$output["inputBugCount"] = count($bugs);
+			$output["useProcessor"] = array(
+				"stemming" => $useStemming,
+				"stopWordsRemoval" => $useStopWordsRemoval,
+				"spellCheck" => $useSpellCheck,
+				"synonymReplacement" => $useSynonymReplacement
 			);
 		}
 

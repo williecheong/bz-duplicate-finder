@@ -28,15 +28,30 @@ class Processor { // This is obviously the core natural language processor class
         }
     }
 
-    public function executeAll($bugs) {
+    public function executeAll( $bugs, 
+                                $useStemming = true, 
+                                $useStopWordsRemoval = true, 
+                                $useSpellCheck = true, 
+                                $useSynonymReplacement = true) {
         foreach ($bugs as $bugId => $bug) {
             $processedSummary = $bug->summary;
-
             $processedSummary = $this->tokenization($processedSummary);
-            $processedSummary = $this->stemming($processedSummary);
-            $processedSummary = $this->stopWordsRemoval($processedSummary);
-            $processedSummary = $this->spellCheck($processedSummary);
-            $processedSummary = $this->synonymReplacement($processedSummary);
+
+            if ($useStemming) {
+                $processedSummary = $this->stemming($processedSummary);
+            }
+
+            if ($useStopWordsRemoval) {
+                $processedSummary = $this->stopWordsRemoval($processedSummary);
+            }
+
+            if ($useSpellCheck) {
+                $processedSummary = $this->spellCheck($processedSummary);
+            }
+    
+            if ($useSynonymReplacement) {
+                $processedSummary = $this->synonymReplacement($processedSummary);
+            }
 
             $bugs[$bugId]->processedSummary = $processedSummary;
         }
