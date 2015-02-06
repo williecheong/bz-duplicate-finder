@@ -2,6 +2,21 @@
 
 return array(
 	"SIMILARITY_REQUIREMENT" => 0.01, // Higher value makes it harder to match for duplicity
+	"FIREFOX_OS_PRODUCT_JARGON" => array( // Do not process or remove these words on the "Firefox OS" product
+		"keypad",
+		"keyboard",
+		"app",
+		"homescreen",
+		"b2g",
+		"gonk",
+		"gecko",
+		"marketplace",
+		"leo",
+		"gmail",
+		"hotmail",
+		"gps",
+		"usb"
+	),
 	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words
 		"a",
 		"a's",

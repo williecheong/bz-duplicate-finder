@@ -38,19 +38,19 @@ class Processor { // This is obviously the core natural language processor class
             $processedSummary = $this->tokenization($processedSummary);
 
             if ($useStemming) {
-                $processedSummary = $this->stemming($processedSummary);
+                $processedSummary = $this->stemming($processedSummary, $bug);
             }
 
             if ($useStopWordsRemoval) {
-                $processedSummary = $this->stopWordsRemoval($processedSummary);
+                $processedSummary = $this->stopWordsRemoval($processedSummary, $bug);
             }
 
             if ($useSpellCheck) {
-                $processedSummary = $this->spellCheck($processedSummary);
+                $processedSummary = $this->spellCheck($processedSummary, $bug);
             }
     
             if ($useSynonymReplacement) {
-                $processedSummary = $this->synonymReplacement($processedSummary);
+                $processedSummary = $this->synonymReplacement($processedSummary, $bug);
             }
 
             $bugs[$bugId]->processedSummary = $processedSummary;
@@ -79,28 +79,40 @@ class Processor { // This is obviously the core natural language processor class
         $output = str_replace("~", " ", $output);
         $output = str_replace("\\", " ", $output);
         $output = str_replace("\"", " ", $output);
-        $output = str_replace("\'", " ", $output);
         
         $output = strtolower($output);
 
         return $this->tokenizer->tokenize($output);              
     }
 
-    public function stemming( $tokens ) {
-        return $this->stemmer->stemAll($tokens);
+    public function stemming( $tokens, $bug ) {
+        foreach ($tokens as $key => $token) {
+            $tokens[$key] = str_singular($token);
+            $tokens[$key] = $this->stemmer->stem($token);
+        }
+
+        return $tokens;
     }
 
-    public function stopWordsRemoval( $tokens ) {
+    public function stopWordsRemoval( $tokens, $bug ) {
         $output = array();
         foreach ( $tokens as $token ) {
+            if ( $bug->product == "Firefox OS" ) {
+                if (in_array($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
+                    $output[] = $token;
+                    continue;
+                }
+            }
+
             if ( !is_null($this->stopWords->transform($token)) ) {
                 $output[] = $token;
+                continue;
             }
         } 
         return $output;
     }
 
-    public function spellCheck( $tokens ) {
+    public function spellCheck( $tokens, $bug ) {
         if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
                 if (!pspell_check($this->pspell_link, $token)) {
@@ -117,7 +129,7 @@ class Processor { // This is obviously the core natural language processor class
         return $tokens;
     }
 
-    public function synonymReplacement( $tokens ) {
+    public function synonymReplacement( $tokens, $bug ) {
         return $tokens;
     }
 }
