@@ -88,9 +88,9 @@ class Processor { // This is obviously the core natural language processor class
     public function stemming( $tokens, $bug ) {
         foreach ($tokens as $key => $token) {
             $tokens[$key] = str_singular($token);
-            $tokens[$key] = $this->stemmer->stem($token);
+            $tokens[$key] = $this->stemmer->transform($token);
         }
-
+        
         return $tokens;
     }
 
