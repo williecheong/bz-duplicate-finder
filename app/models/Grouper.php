@@ -14,10 +14,15 @@ class Grouper {
                     break;
                 }
 
-                $similarity = $this->similarity->jaccardIndex(
-                    $bugI->processedSummary, 
-                    $bugJ->processedSummary
-                );
+                $similarity = 0;
+                if ($bugI->product == $bugJ->product) { 
+                    // Must belong to same product to be considered for duplication
+                    $similarity = $this->similarity->jaccardIndex(
+                        $bugI->processedSummary, 
+                        $bugJ->processedSummary
+                    );
+
+                }
 
                 if ($similarity > Config::get('constants.SIMILARITY_REQUIREMENT')) {
                     $similarPairs[] = array($bugI->id, $bugJ->id);
@@ -31,7 +36,7 @@ class Grouper {
         $outputGroups = array();
         $nodes = $this->getUniqueValues($similarPairs);
 
-        for ($i = count($nodes); $i >= 2; $i--) {
+        for ($i = Config::get('constants.MAXIMUM_GROUP_SIZE'); $i >= 2; $i--) {
             $possibleGroups = new Combinations($nodes, $i);
             foreach ($possibleGroups as $possibleGroup) {
                 $pairsNeededByPossibleGroup = new Combinations($possibleGroup, 2);
@@ -54,7 +59,7 @@ class Grouper {
             }
         }
 
-        /* Convert the output groups from pairs to clusters */
+        /* Flatten the output groups from pairs to clusters */
         foreach ($outputGroups as $index => $outputGroup) {
             $outputGroups[$index] = $this->getUniqueValues($outputGroup);
         }
@@ -125,9 +130,8 @@ class Grouper {
     }
 
     private function isSamePair($a, $b) {
-        sort($a);
-        sort($b);
-        if ($a == $b) { //equal
+        sort($a); sort($b);
+        if ($a[0] == $b[0] && $a[1] == $b[1]) { //equal
             return true;
         }
         return false;

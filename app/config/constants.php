@@ -1,6 +1,7 @@
 <?php 	//file : app/config/constants.php
 
 return array(
+	"MAXIMUM_GROUP_SIZE" => 4, // The higher this is, the longer the runtime required
 	"SIMILARITY_REQUIREMENT" => 0.01, // Higher value makes it harder to match for duplicity
 	"FIREFOX_OS_PRODUCT_JARGON" => array( // Do not process or remove these words on the "Firefox OS" product
 		"keypad",
@@ -15,6 +16,8 @@ return array(
 		"gmail",
 		"hotmail",
 		"gps",
+		"unagi",
+		"dialer",
 		"usb"
 	),
 	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words

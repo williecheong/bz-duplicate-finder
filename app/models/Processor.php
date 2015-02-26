@@ -29,20 +29,20 @@ class Processor { // This is obviously the core natural language processor class
     }
 
     public function executeAll( $bugs, 
-                                $useStemming = true, 
                                 $useStopWordsRemoval = true, 
+                                $useStemming = true, 
                                 $useSpellCheck = true, 
                                 $useSynonymReplacement = true) {
         foreach ($bugs as $bugId => $bug) {
             $processedSummary = $bug->summary;
             $processedSummary = $this->tokenization($processedSummary);
 
-            if ($useStemming) {
-                $processedSummary = $this->stemming($processedSummary, $bug);
-            }
-
             if ($useStopWordsRemoval) {
                 $processedSummary = $this->stopWordsRemoval($processedSummary, $bug);
+            }
+
+            if ($useStemming) {
+                $processedSummary = $this->stemming($processedSummary, $bug);
             }
 
             if ($useSpellCheck) {
@@ -85,15 +85,6 @@ class Processor { // This is obviously the core natural language processor class
         return $this->tokenizer->tokenize($output);              
     }
 
-    public function stemming( $tokens, $bug ) {
-        foreach ($tokens as $key => $token) {
-            $tokens[$key] = str_singular($token);
-            $tokens[$key] = $this->stemmer->transform($token);
-        }
-        
-        return $tokens;
-    }
-
     public function stopWordsRemoval( $tokens, $bug ) {
         $output = array();
         foreach ( $tokens as $token ) {
@@ -110,6 +101,15 @@ class Processor { // This is obviously the core natural language processor class
             }
         } 
         return $output;
+    }
+
+    public function stemming( $tokens, $bug ) {
+        foreach ($tokens as $key => $token) {
+            $tokens[$key] = str_singular($token);
+            $tokens[$key] = $this->stemmer->transform($token);
+        }
+        
+        return $tokens;
     }
 
     public function spellCheck( $tokens, $bug ) {
