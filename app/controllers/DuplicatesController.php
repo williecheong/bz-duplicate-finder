@@ -13,13 +13,13 @@ class DuplicatesController extends BaseController {
 		/* Initialize timer and retrieve processor switches if any */
 		$timeStart = microtime(true);
 		$time = array(); 
+		$outputVerbose = Input::get('debug', false) ? true : false;
 		$useProcessor = array(
 			'stopWordsRemoval' => Input::get('stopWordsRemoval', true) ? true : false,
 			'stemming' => Input::get('stemming', true) ? true : false,
 			'spellCheck' => Input::get('spellCheck', true) ? true : false,
 			'synonymReplacement' => Input::get('synonymReplacement', true) ? true : false
 		);
-		$outputVerbose = Input::get('debug', false) ? true : false;
 
 		/* Input bug retrieval and validation */
 		$bugs = Input::get('bugs', false);
@@ -81,7 +81,7 @@ class DuplicatesController extends BaseController {
 			$output["inputBugCount"] = count($bugs);
 			$output["similarityRequirement"] = Config::get('constants.SIMILARITY_REQUIREMENT');
 			$output["runtimeInSeconds"] = $time;
-			$output["useProcessor"] = $useProcessor;
+			// $output["useProcessor"] = $useProcessor;
 		}
 
 		return $this->makeSuccess($output);
