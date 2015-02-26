@@ -11,6 +11,7 @@ return array(
 		"b2g" => 1,
 		"gonk" => 1,
 		"gecko" => 1,
+		"gaia" => 1,
 		"marketplace" => 1,
 		"leo" => 1,
 		"gmail" => 1,
@@ -18,7 +19,8 @@ return array(
 		"gps" => 1,
 		"unagi" => 1,
 		"dialer" => 1,
-		"usb" => 1 
+		"usb" => 1,
+		"ota" => 1
 	),
 	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words 
 		"a",

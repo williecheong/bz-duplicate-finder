@@ -115,6 +115,12 @@ class Processor { // This is obviously the core natural language processor class
     public function spellCheck( $tokens, $bug ) {
         if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
+                if ( $bug->product == "Firefox OS" ) {
+                    if (array_key_exists($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
+                        continue;
+                    }
+                }
+
                 if (!pspell_check($this->pspell_link, $token)) {
                     $suggestions = pspell_suggest($this->pspell_link, $token);
                     foreach ($suggestions as $suggestion) {
