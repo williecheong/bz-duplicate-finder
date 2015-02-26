@@ -2,25 +2,25 @@
 
 return array(
 	"MAXIMUM_GROUP_SIZE" => 4, // The higher this is, the longer the runtime required
-	"SIMILARITY_REQUIREMENT" => 0.01, // Higher value makes it harder to match for duplicity
-	"FIREFOX_OS_PRODUCT_JARGON" => array( // Do not process or remove these words on the "Firefox OS" product
-		"keypad",
-		"keyboard",
-		"app",
-		"homescreen",
-		"b2g",
-		"gonk",
-		"gecko",
-		"marketplace",
-		"leo",
-		"gmail",
-		"hotmail",
-		"gps",
-		"unagi",
-		"dialer",
-		"usb"
+	"SIMILARITY_REQUIREMENT" => 0.15, // Higher value makes it harder to match for duplicity
+	"FIREFOX_OS_PRODUCT_JARGON" => array( // Do not process or remove these words on the "Firefox OS" product, using hashmap for O(1) lookup
+		"keypad" => 1,
+		"keyboard" => 1,
+		"app" => 1,
+		"homescreen" => 1,
+		"b2g" => 1,
+		"gonk" => 1,
+		"gecko" => 1,
+		"marketplace" => 1,
+		"leo" => 1,
+		"gmail" => 1,
+		"hotmail" => 1,
+		"gps" => 1,
+		"unagi" => 1,
+		"dialer" => 1,
+		"usb" => 1 
 	),
-	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words
+	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words 
 		"a",
 		"a's",
 		"able",
@@ -591,7 +591,7 @@ return array(
 		"yourself",
 		"yourselves",
 		"z",
-		"zero"
+		"zero" 
 	)
 );
 	

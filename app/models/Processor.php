@@ -89,7 +89,7 @@ class Processor { // This is obviously the core natural language processor class
         $output = array();
         foreach ( $tokens as $token ) {
             if ( $bug->product == "Firefox OS" ) {
-                if (in_array($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
+                if (array_key_exists($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
                     $output[] = $token;
                     continue;
                 }
