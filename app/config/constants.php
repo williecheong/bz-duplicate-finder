@@ -20,7 +20,8 @@ return array(
 		"unagi" => 1,
 		"dialer" => 1,
 		"usb" => 1,
-		"ota" => 1
+		"ota" => 1,
+		"wifi" => 1
 	),
 	"STOP_WORDS" => array( // Reference - https://code.google.com/p/stop-words 
 		"a",
