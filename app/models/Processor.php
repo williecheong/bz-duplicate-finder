@@ -22,7 +22,8 @@ class Processor { // This is obviously the core natural language processor class
         $this->tokenizer = new WhitespaceAndPunctuationTokenizer();
         $this->stemmer = new PorterStemmer();
         $this->stopWords = new StopWords(Config::get('constants.STOP_WORDS'));
-        
+        $this->jargons = new Jargons(Config::get('constants.PRODUCT_JARGONS'));
+
         if (function_exists('pspell_new')) {
             $this->pspell_link = pspell_new('en_US', 'american');
         }
@@ -88,11 +89,9 @@ class Processor { // This is obviously the core natural language processor class
     public function stopWordsRemoval( $tokens, $bug ) {
         $output = array();
         foreach ( $tokens as $token ) {
-            if ( $bug->product == "Firefox OS" ) {
-                if (array_key_exists($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
-                    $output[] = $token;
-                    continue;
-                }
+            if ( $this->jargons->isJargonOf($token, $bug->product) ) {
+                $output[] = $token;
+                continue;
             }
 
             if ( !is_null($this->stopWords->transform($token)) ) {
@@ -115,10 +114,8 @@ class Processor { // This is obviously the core natural language processor class
     public function spellCheck( $tokens, $bug ) {
         if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
-                if ( $bug->product == "Firefox OS" ) {
-                    if (array_key_exists($token, Config::get('constants.FIREFOX_OS_PRODUCT_JARGON'))) {
-                        continue;
-                    }
+                if ( $this->jargons->isJargonOf($token, $bug->product) ) {
+                    continue;
                 }
 
                 if (!pspell_check($this->pspell_link, $token)) {
