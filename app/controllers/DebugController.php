@@ -31,4 +31,8 @@ class DebugController extends BaseController {
 		$grouperClass = new Grouper();
 		return $this->makeSuccess($grouperClass->clusterPairsToGroups($pairs));
 	}
+
+	public function test() {
+		return View::make('debug.test');
+	}
 }

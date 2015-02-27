@@ -18,4 +18,5 @@ Route::get('/', function() {
 Route::resource('duplicates', 'DuplicatesController');
 
 Route::get('debug/grouping', 'DebugController@grouping');
+Route::get('debug/test', 'DebugController@test');
 Route::resource('debug', 'DebugController');
