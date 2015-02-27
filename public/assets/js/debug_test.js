@@ -26,16 +26,43 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
     }; 
 
     $scope.validate = function(expected, actual) {
-        if (expected.length != actual.length) {
-            return {"type":"fail", "reason":"Wrong number of bug groups returned."};
+        for (var i=0; i<expected.length; i++) {
+            var groupFound = false;
+            for (var j=0; j<actual.length; j++) {
+                if ($scope.sameArray(expected[i], actual[j].bugs)) {
+                    groupFound = true;
+                    break;
+                }
+            }
+            if (groupFound == false) {
+                return {"type":"fail", "reason":"Group "+i+" could not be found in output."};
+            }
+        } 
+
+        if (expected.length < actual.length) {
+            return {"type":"warning", "reason":"All expected groups were found in the output but more groups were generated than expected."};
         }
+
         return {"type":"success"};
+    };
+
+    $scope.sameArray = function (a, b) {
+        if (a.length != b.length) {
+            return false;
+        }
+        a.sort(); b.sort();
+        for (i=0; i<a.length; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+        return true;
     };
 
 }).filter('arrayToCsv', function() {
   return function(input) {
     if (typeof input != 'object') { return input; }
-    if (input.length == 0) { return "Empty"; }
+    if (input.length < 0) { return "Empty"; }
     return input.join(', ');
   };
 }).filter('bugLink', function() {

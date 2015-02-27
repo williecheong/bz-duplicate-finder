@@ -57,6 +57,9 @@
                             </div>
                         </td>
                         <td>
+                            <div ng-if="!testCase.outputGroups || testCase.outputGroups.length==0">
+                                <em>Empty...</em>
+                            </div>
                             <div ng-repeat="group in testCase.outputGroups">
                                 <strong>Bugs:</strong> 
                                 <a href="{{group.bugs | bugLink}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
@@ -73,7 +76,7 @@
                                 <div style="margin-top:0px;margin-bottom:10px;">
                                     <div>
                                         <span>Status:</span>
-                                        <strong ng-class="{'text-success':testCase.meta.result.type=='success', 'text-danger':testCase.meta.result.type=='fail'}">
+                                        <strong ng-class="{'text-success':testCase.meta.result.type=='success','text-danger':testCase.meta.result.type=='fail','text-warning':testCase.meta.result.type=='warning'}">
                                             {{ testCase.meta.result.type | uppercase}}
                                         </strong>
                                     </div>
