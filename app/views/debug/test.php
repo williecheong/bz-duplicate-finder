@@ -42,6 +42,11 @@
                         <td>
                             <a href="{{testCase.input | bugLink}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
                             <span ng-bind="testCase.input | arrayToCsv"></span>
+                            <hr style="margin-top:0px;margin-bottom:20px;">
+                            <div ng-if="testCase.notes">
+                                <strong>Notes:</strong><br>
+                                <em ng-bind="testCase.notes"></em>
+                            </div>
                         </td>
                         <td>
                             <div ng-repeat="(groupNum, group) in testCase.expectedGroups">
@@ -77,7 +82,11 @@
                                 <div style="margin-top:0px;margin-bottom:5px;">
                                     <span>Number of Groups Returned:</span>
                                     <strong>{{ testCase.outputGroups.length }}</strong>
-                                </div> 
+                                </div>      
+                                <div style="margin-top:0px;margin-bottom:5px;">
+                                    <span>Total Run Duration:</span>
+                                    <strong>{{ testCase.meta.runtime.totalRuntime | number:4 }} seconds</strong>
+                                </div>
                                 <div style="margin-top:0px;margin-bottom:5px;">
                                     <span>Bugzilla Retrieval:</span>
                                     <strong>{{ testCase.meta.runtime.bugzillaForBugs | number:4 }} seconds</strong>
@@ -97,11 +106,7 @@
                                 <div style="margin-top:0px;margin-bottom:5px;">
                                     <span>Post Processing:</span>
                                     <strong>{{ testCase.meta.runtime.postProcessingForBugGroups | number:4 }} seconds</strong>
-                                </div>         
-                                <div style="margin-top:0px;margin-bottom:5px;">
-                                    <span>Total Duration:</span>
-                                    <strong>{{ testCase.meta.runtime.totalRuntime | number:4 }} seconds</strong>
-                                </div>
+                                </div>    
                             </div>
                         </td>
                     </tr>
