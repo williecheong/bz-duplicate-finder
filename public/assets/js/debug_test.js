@@ -26,6 +26,7 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
     }; 
 
     $scope.validate = function(expected, actual) {
+        var missingGroups = [];
         for (var i=0; i<expected.length; i++) {
             var groupFound = false;
             for (var j=0; j<actual.length; j++) {
@@ -35,9 +36,13 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
                 }
             }
             if (groupFound == false) {
-                return {"type":"fail", "reason":"Group "+i+" could not be found in output."};
+                missingGroups.push(i);
             }
         } 
+        
+        if (missingGroups.length > 0) {
+            return {"type":"fail", "reason":"Groups ["+missingGroups.join(', ')+"] could not be found in any of the actual output groups."};
+        }
 
         if (expected.length < actual.length) {
             return {"type":"warning", "reason":"All expected groups were found in the output but more groups were generated than expected."};
