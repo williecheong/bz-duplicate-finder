@@ -13,10 +13,48 @@
         <link href="/assets/vendor/ng-toaster/toaster.css" rel="stylesheet">
     </head>
     <body ng-app="myApp" ng-controller="myController">
-        <toaster-container toaster-options="{'time-out': <?=Config::get('constants.TOASTER_FADE_OUT')?>}"></toaster-container>
-        <div class="container" id="outer-container">
-            HELLO
-        </div> <!-- /container -->
+        <toaster-container toaster-options="{'time-out': 5000}"></toaster-container>
+        <div class="container">
+            <h1>Bugzilla Duplicate Finder - Functional Testing</h1>
+            <table class="table table-hover table-bordered table-condensed">
+                <!-- Table Headings -->
+                <thead>
+                    <tr>
+                        <th>Input Bug List</th>
+                        <th>Expected Clusters</th>
+                        <th>Actual Clusters Output</th>
+                        <th>Execution Details</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    <tr ng-repeat="testCase in testCases">
+                        <td>
+                            <span ng-bind="testCase.input | arrayToCsv"></span>
+                        </td>
+                        <td>
+                            <div ng-repeat="group in testCase.expected">
+                                <span ng-bind="group | arrayToCsv"></span>
+                                <hr style="margin:0px;">
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-if="!testCase.output" class="text-center">
+                                <button class="btn btn-primary">
+                                    <i class="fa fa-terminal"></i> Run test
+                                </button>
+                            </div>
+                            <div ng-repeat="group in testCase.output">
+                                <span ng-bind="group | arrayToCsv"></span>
+                                <a href="">
+                                    <i class="fa fa-desktop"></i>
+                                </a>
+                                <hr style="margin:0px;">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Angular / Bootstrap Core JavaScript
         <!-- Placed at the end of the document so the pages load faster -->

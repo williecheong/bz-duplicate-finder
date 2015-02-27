@@ -35,9 +35,8 @@ class Grouper {
     public function clusterPairsToGroups($similarPairs) {    
         $outputGroups = array();
         $nodes = $this->getUniqueValues($similarPairs);
-
         for ($i = Config::get('constants.MAXIMUM_GROUP_SIZE'); $i >= 2; $i--) {
-            $possibleGroups = new Combinations($nodes, $i);
+            $possibleGroups = (count($nodes) >= $i) ? new Combinations($nodes, $i) : array();
             foreach ($possibleGroups as $possibleGroup) {
                 $pairsNeededByPossibleGroup = new Combinations($possibleGroup, 2);
                 if (count($similarPairs) < count($pairsNeededByPossibleGroup)) {
