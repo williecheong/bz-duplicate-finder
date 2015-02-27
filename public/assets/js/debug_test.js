@@ -19,11 +19,6 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
                     data.duplicates
                 )
             };
-
-            if (data.duplicates.length == 0) {
-                toaster.pop('info', 'Status: ' + status, "No duplicate groups found for test case " + key + ".");
-            }
-
         }).error(function(data, status, headers, config) {
             toaster.pop('error', 'Error: ' + status, data.message);
             $scope.testCases[key].loading = false;
