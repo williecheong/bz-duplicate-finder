@@ -20,7 +20,19 @@
     <body ng-app="myApp" ng-controller="myController">
         <toaster-container toaster-options="{'time-out': 5000}"></toaster-container>
         <div class="container">
-            <h1>Bugzilla Duplicate Finder - Functional Testing</h1>
+            <h1>
+                Bugzilla Duplicate Finder - Functional Testing
+                <button ng-click="runAllTests(0)" ng-disabled="loading" class="btn btn-success btn-lg pull-right">
+                    <span ng-hide="loading">
+                        <i class="fa fa-globe fa-lg"></i> 
+                        Run All Tests
+                    </span>
+                    <span ng-show="loading">
+                        <i class="fa fa-spinner fa-spin fa-lg"></i> 
+                        Running Now
+                    </span>
+                </button>
+            </h1>
             <table class="table table-hover table-bordered table-condensed">
                 <!-- Table Headings -->
                 <thead>
@@ -33,10 +45,16 @@
                     </tr> 
                 </thead>
                 <tbody>
-                    <tr ng-repeat="(index,testCase) in testCases">
+                    <tr ng-class="{'warning':testCase.loading}" ng-repeat="(index,testCase) in testCases">
                         <td>
-                            <button ng-click="runTest(index, testCase.input)" ng-disabled="testCase.loading" class="btn btn-primary">
-                                <i class="fa fa-terminal fa-lg"></i> {{ index }}
+                            <button ng-click="runTest(index)" ng-disabled="testCase.loading" class="btn btn-primary">
+                                <span ng-hide="testCase.loading">
+                                    <i class="fa fa-terminal fa-lg"></i>
+                                </span> 
+                                <span ng-show="testCase.loading">
+                                    <i class="fa fa-spinner fa-spin fa-lg"></i>
+                                </span>
+                                {{ index }}
                             </button>
                         </td>
                         <td>

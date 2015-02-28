@@ -3,11 +3,11 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngtimeago', 'toaster']);
 app.controller('myController', function( $scope, $sce, $http, $filter, toaster ) {
     
     $scope.testCases = testCases;
-    $scope.runTest = function(key, bugList) {
+    $scope.runTest = function(key) {
         $scope.testCases[key].loading = true;
         $http({
             'method': 'GET',
-            'url': '/duplicates?debug=1&bugs=' + bugList.join(',')
+            'url': '/duplicates?debug=1&bugs=' + $scope.testCases[key].input.join(',')
         }).success(function(data, status, headers, config) {
             $scope.testCases[key].loading = false;
             $scope.testCases[key].outputGroups = data.duplicates;
@@ -23,7 +23,37 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
             toaster.pop('error', 'Error: ' + status, data.message);
             $scope.testCases[key].loading = false;
         });
-    }; 
+    };
+
+    $scope.runAllTests = function(key) {
+        $scope.loading = true;
+        $scope.testCases[key].loading = true;
+        $http({
+            'method': 'GET',
+            'url': '/duplicates?debug=1&bugs=' + $scope.testCases[key].input.join(',')
+        }).success(function(data, status, headers, config) {
+            $scope.testCases[key].loading = false;
+            $scope.testCases[key].outputGroups = data.duplicates;
+            $scope.testCases[key].meta = {
+                similarityRequirement : data.similarityRequirement,
+                runtime : data.runtimeInSeconds,
+                result : $scope.validate(
+                    $scope.testCases[key].expectedGroups,
+                    data.duplicates
+                )
+            };
+
+            if (typeof $scope.testCases[key+1] != 'undefined') {
+                $scope.runAllTests(key+1);
+            } else {
+                $scope.loading = false;
+            }
+
+        }).error(function(data, status, headers, config) {
+            toaster.pop('error', 'Error: ' + status, data.message);
+            $scope.testCases[key].loading = false;
+        });
+    };
 
     $scope.validate = function(expected, actual) {
         var missingGroups = [];
