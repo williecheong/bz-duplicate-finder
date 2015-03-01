@@ -71,7 +71,7 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
         } 
         
         if (missingGroups.length > 0) {
-            return {"type":"fail", "reason":"Groups ["+missingGroups.join(', ')+"] could not be found in any of the actual output groups."};
+            return {"type":"fail", "reason": (expected.length-missingGroups.length)+" out of "+expected.length+" groups found. Groups ["+missingGroups.join(', ')+"] are missing from actual output groups."};
         }
 
         if (expected.length < actual.length) {
