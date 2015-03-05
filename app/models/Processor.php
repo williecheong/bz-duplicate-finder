@@ -70,7 +70,10 @@ class Processor { // This is obviously the core natural language processor class
         $output = str_replace("\\", " ", $output);
         $output = str_replace("\"", " ", $output);
         
+        $output = preg_replace('/[0-9]+/', '', $output);
+
         $output = strtolower($output);
+
         $output = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $output);
 
         return explode(' ', $output);              
@@ -122,11 +125,13 @@ class Processor { // This is obviously the core natural language processor class
                     var_dump($token);
                     echo "<br>";
                     var_dump($suggestions);
-                    echo "<br><br>";
                     foreach ($suggestions as $suggestion) {
                         if (ctype_alpha($suggestion)) {
                             // Only accept the suggested word if it looks normal
                             $tokens[$key] = $suggestion;
+                            var_dump($suggestion);
+                            echo "<br><br>";
+                            break;
                         }
                     }
                 }

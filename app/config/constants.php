@@ -6,12 +6,15 @@ return array(
 	"PRODUCT_JARGONS" => array( // Do not process or remove these words on the "Firefox OS" product
 		"*" => array(
 			"firefox",
+			"mozilla",
 			"gonk",
 			"gecko",
 			"gaia",
 			"marketplace",
 			"gmail",
 			"hotmail",
+			"pdf",
+			"url"
 		),
 		"Firefox OS" => array(
 			"keypad",
