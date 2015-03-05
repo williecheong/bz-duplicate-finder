@@ -17,11 +17,10 @@ class Grouper {
                 $similarity = 0;
                 if ($bugI->product == $bugJ->product) { 
                     // Must belong to same product to be considered for duplication
-                    $similarity = $this->similarity->jaccardIndex(
+                    $similarity = $this->similarity->customJaccardIndex(
                         $bugI->processedSummary, 
                         $bugJ->processedSummary
                     );
-
                 }
 
                 if ($similarity > Config::get('constants.SIMILARITY_REQUIREMENT')) {
@@ -74,7 +73,7 @@ class Grouper {
         foreach ($pairingCombinations as $combination) {
             $setA = $bagsOfTokens[ $combination[0] ];
             $setB = $bagsOfTokens[ $combination[1] ];
-            $intersections = array_intersect($setA, $setB);
+            $intersections = $this->similarity->getIntersectingTokens($setA, $setB);
             foreach ($intersections as $intersectingWord) {
                 if (!in_array($intersectingWord, $keywords)) {
                     $keywords[] = $intersectingWord;

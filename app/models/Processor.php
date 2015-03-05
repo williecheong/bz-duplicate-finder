@@ -1,17 +1,6 @@
 <?php
 
 /**********
-    * Tokenization
-**********/
-use \NlpTools\Tokenizers\WhitespaceTokenizer;
-use \NlpTools\Tokenizers\WhitespaceAndPunctuationTokenizer;
-
-/**********
-    * Stemming
-**********/
-use \NlpTools\Stemmers\PorterStemmer;
-
-/**********
     * Stop Words Removal
 **********/
 use \NlpTools\Utils\StopWords;
@@ -19,8 +8,7 @@ use \NlpTools\Utils\StopWords;
 class Processor { // This is obviously the core natural language processor class
     
     public function __construct() {
-        $this->tokenizer = new WhitespaceAndPunctuationTokenizer();
-        $this->stemmer = new PorterStemmer();
+        $this->stemmer = new PorterStemmer2();
         $this->stopWords = new StopWords(Config::get('constants.STOP_WORDS'));
         $this->jargons = new Jargons(Config::get('constants.PRODUCT_JARGONS'));
 
@@ -82,13 +70,19 @@ class Processor { // This is obviously the core natural language processor class
         $output = str_replace("\"", " ", $output);
         
         $output = strtolower($output);
+        $output = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $output);
 
-        return $this->tokenizer->tokenize($output);              
+        return explode(' ', $output);              
     }
 
     public function stopWordsRemoval( $tokens, $bug ) {
         $output = array();
         foreach ( $tokens as $token ) {
+            if ( $this->jargons->isJargonOf($token, "*") ) {
+                $output[] = $token;
+                continue;
+            }
+
             if ( $this->jargons->isJargonOf($token, $bug->product) ) {
                 $output[] = $token;
                 continue;
@@ -105,7 +99,7 @@ class Processor { // This is obviously the core natural language processor class
     public function stemming( $tokens, $bug ) {
         foreach ($tokens as $key => $token) {
             $tokens[$key] = str_singular($token);
-            $tokens[$key] = $this->stemmer->transform($token);
+            $tokens[$key] = $this->stemmer->stem($token);
         }
         
         return $tokens;
@@ -114,12 +108,17 @@ class Processor { // This is obviously the core natural language processor class
     public function spellCheck( $tokens, $bug ) {
         if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
+                if ( $this->jargons->isJargonOf($token, "*") ) {
+                    continue;
+                }
+
                 if ( $this->jargons->isJargonOf($token, $bug->product) ) {
                     continue;
                 }
 
                 if (!pspell_check($this->pspell_link, $token)) {
                     $suggestions = pspell_suggest($this->pspell_link, $token);
+                    var_dump($suggestions);
                     foreach ($suggestions as $suggestion) {
                         if (ctype_alpha($suggestion)) {
                             // Only accept the suggested word if it looks normal

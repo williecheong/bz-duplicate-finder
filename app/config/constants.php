@@ -4,19 +4,22 @@ return array(
 	"MAXIMUM_GROUP_SIZE" => 4, // The higher this is, the longer the runtime required
 	"SIMILARITY_REQUIREMENT" => 0.15, // Higher value makes it harder to match for duplicity
 	"PRODUCT_JARGONS" => array( // Do not process or remove these words on the "Firefox OS" product
+		"*" => array(
+			"firefox",
+			"gonk",
+			"gecko",
+			"gaia",
+			"marketplace",
+			"gmail",
+			"hotmail",
+		),
 		"Firefox OS" => array(
 			"keypad",
 			"keyboard",
 			"app",
 			"homescreen",
 			"b2g",
-			"gonk",
-			"gecko",
-			"gaia",
-			"marketplace",
 			"leo",
-			"gmail",
-			"hotmail",
 			"gps",
 			"unagi",
 			"dialer",
