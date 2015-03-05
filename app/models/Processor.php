@@ -122,6 +122,8 @@ class Processor { // This is obviously the core natural language processor class
 
                 if (!pspell_check($this->pspell_link, $token)) {
                     $suggestions = pspell_suggest($this->pspell_link, $token);
+                    var_dump($bug->summary);
+                    echo "<br>";
                     var_dump($token);
                     echo "<br>";
                     var_dump($suggestions);
