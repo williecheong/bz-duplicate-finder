@@ -127,6 +127,7 @@ class Processor { // This is obviously the core natural language processor class
                     var_dump($token);
                     echo "<br>";
                     var_dump($suggestions);
+                    echo "<br>";
                     foreach ($suggestions as $suggestion) {
                         if (ctype_alpha($suggestion)) {
                             // Only accept the suggested word if it looks normal
