@@ -63,6 +63,7 @@ class Processor { // This is obviously the core natural language processor class
         $output = str_replace(",", " ", $output);
         $output = str_replace(".", " ", $output);
         $output = str_replace("!", " ", $output);
+        $output = str_replace("?", " ", $output);
         $output = str_replace("-", " ", $output);
         $output = str_replace("_", " ", $output);
         $output = str_replace("~", " ", $output);
