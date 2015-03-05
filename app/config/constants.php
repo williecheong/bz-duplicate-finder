@@ -14,13 +14,15 @@ return array(
 			"gmail",
 			"hotmail",
 			"pdf",
-			"url"
+			"url",
+			"addon",
 		),
 		"Firefox OS" => array(
 			"keypad",
 			"keyboard",
 			"app",
 			"homescreen",
+			"rebootscreen",
 			"b2g",
 			"leo",
 			"gps",
