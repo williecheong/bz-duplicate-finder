@@ -102,6 +102,6 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
   };
 }).filter('bugLink', function() {
   return function(input) {
-    return "https://bugzilla.mozilla.org/rest/bug?include_fields=id,summary,component,product&bug_id=" + input.join(', ');
+    return "https://bugzilla.mozilla.org/rest/bug?include_fields=id,summary,component,product,dupe_of&bug_id=" + input.join(', ');
   };
 });
