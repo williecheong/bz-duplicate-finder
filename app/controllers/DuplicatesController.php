@@ -21,7 +21,8 @@ class DuplicatesController extends BaseController {
 			'synonymReplacement' => Input::get('synonymReplacement', true) ? true : false
 		);
 
-		/* Input bug retrieval and validation */
+		/************************************** 
+		 * Input bug retrieval and validation */
 		$bugs = Input::get('bugs', false);
 		
 		if ( $bugs == false ) {
@@ -43,19 +44,31 @@ class DuplicatesController extends BaseController {
 		if ($bugs == false) {
 			return $this->makeError("Failed to retrieve bugs from Bugzilla");
 		}
-		$time['bugzillaForBugs'] = microtime(true) - array_sum($time) - $timeStart;
 
-		/*	Converting each bug into a bag of words */
+		$time['bugzillaForBugs'] = microtime(true) - array_sum($time) - $timeStart;
+		/* End of bug retrieval from Bugzilla 
+		*************************************/
+
+		/*******************************************
+		 * Converting each bug into a bag of words */
 		$bugs = $this->processor->executeAll($bugs);
 		$time['bugsToBagsOfWords'] = microtime(true) - array_sum($time) - $timeStart;
+		/* End of converting each bug to a bag of words
+		***********************************************/
 
-		/* Finding similar pairs of bugs */
+		/*********************************
+		 * Finding similar pairs of bugs */
 		$similarPairs = $this->grouper->getSimilarPairsFromProcessedBugs($bugs);
 		$time['bagOfWordsToSimilarPairs'] = microtime(true) - array_sum($time) - $timeStart;
+		/* End of finding similar pairs of bugs
+		***************************************/
 
-		/* Forming duplicate groups based on similar pairs */
+		/***************************************************
+		 * Forming duplicate groups based on similar pairs */
 		$groupsAsBugIds = $this->grouper->clusterPairsToGroups($similarPairs);
 		$time['similarPairsToGroups'] = microtime(true) - array_sum($time) - $timeStart;
+		/* End of forming duplicate groups based on similar pairs
+		***********************************************/
 
 		/* Preparing the final outputs */
 		$duplicateGroups = array();

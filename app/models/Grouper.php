@@ -15,14 +15,14 @@ class Grouper {
                 }
 
                 $similarity = 0;
-                if ($bugI->product == $bugJ->product) { 
+                if ($bugI->product == $bugJ->product || $bugI->component == 'General' || $bugJ->component == 'General') { 
                     // Must belong to same product to be considered for duplication
                     $similarity = $this->similarity->customJaccardIndex(
                         $bugI->processedSummary, 
                         $bugJ->processedSummary
                     );
                 }
-
+                
                 if ($similarity > Config::get('constants.SIMILARITY_REQUIREMENT')) {
                     $similarPairs[] = array($bugI->id, $bugJ->id);
                 }
