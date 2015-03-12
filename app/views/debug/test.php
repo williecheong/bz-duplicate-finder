@@ -58,6 +58,7 @@
                             </button>
                         </td>
                         <td>
+                            <a href="{{testCase.input | bmoLink}}" target="_blank"><i class="fa fa-bug"></i></a>
                             <a href="{{testCase.input | bugLink}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
                             <span ng-bind="testCase.input | arrayToCsv"></span>
                             <hr style="margin-top:0px;margin-bottom:20px;">
@@ -69,6 +70,7 @@
                         <td>
                             <div ng-repeat="(groupNum, group) in testCase.expectedGroups">
                                 <strong>Group {{groupNum}}: </strong><br>
+                                <a href="{{group | bmoLink}}" target="_blank"><i class="fa fa-bug"></i></a>
                                 <a href="{{group | bugLink}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
                                 <span ng-bind="group | arrayToCsv"></span>
                                 <hr style="margin-top:0px;margin-bottom:20px;">
@@ -80,6 +82,7 @@
                             </div>
                             <div ng-repeat="group in testCase.outputGroups">
                                 <strong>Bugs:</strong> 
+                                <a href="{{group.bugs | bmoLink}}" target="_blank"><i class="fa fa-bug"></i></a>
                                 <a href="{{group.bugs | bugLink}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
                                 <span ng-bind="group.bugs | arrayToCsv"></span><br>
                                 <strong>Keywords:</strong> 

@@ -104,4 +104,8 @@ app.controller('myController', function( $scope, $sce, $http, $filter, toaster )
   return function(input) {
     return "https://bugzilla.mozilla.org/rest/bug?include_fields=id,summary,component,product,dupe_of&bug_id=" + input.join(', ');
   };
+}).filter('bmoLink', function() {
+  return function(input) {
+    return "https://bugzilla.mozilla.org/buglist.cgi?quicksearch=" + input.join(', ');
+  };
 });
