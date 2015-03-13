@@ -16,10 +16,12 @@ return array(
 			"pdf",
 			"url",
 			"addon",
+			"sap",
 		),
 		"Firefox OS" => array(
 			"keypad",
 			"keyboard",
+			"bluetooth",
 			"app",
 			"homescreen",
 			"rebootscreen",
