@@ -65,7 +65,7 @@ class DuplicatesController extends BaseController {
 
 		/***************************************************
 		 * Forming duplicate groups based on similar pairs */
-		$groupsAsBugIds = $this->grouper->clusterPairsToGroups($similarPairs);
+		$groupsAsBugIds = $this->grouper->clusterPairsToGroups2($similarPairs);
 		$time['similarPairsToGroups'] = microtime(true) - array_sum($time) - $timeStart;
 		/* End of forming duplicate groups based on similar pairs
 		***********************************************/

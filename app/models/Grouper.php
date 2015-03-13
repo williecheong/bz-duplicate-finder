@@ -31,6 +31,44 @@ class Grouper {
         return $similarPairs;
     }
 
+    /**************************************************
+     * Dependent on the Graph and CliqueFinder classes 
+     * These are implementations of the Bron Kerbosch algorithm */
+    public function clusterPairsToGroups2($similarPairs) {
+        $nodes = array();
+        $edges = array();
+        foreach ($similarPairs as $pair) {
+            $nodes[$pair[0]] = 1;
+            $nodes[$pair[1]] = 1;
+            
+            if (!isset($edges[$pair[0]])) {
+                $edges[$pair[0]] = array();
+            }
+            $edges[$pair[0]][$pair[1]] = 1; 
+            
+            if (!isset($edges[$pair[1]])) {
+                $edges[$pair[1]] = array();
+            }
+            $edges[$pair[1]][$pair[0]] = 1;
+        }
+
+        // Implementation of the Bron Kerbosch algorithm 
+        $graph = new Graph($nodes, $edges);
+        $cliqueFinder = new CliqueFinder($graph);
+        $cliqueFinder->find_all_cliques();
+
+        $cliques = array();
+        foreach ($cliqueFinder->get_cliques() as $key => $clique) {
+            $cliques[$key] = array_keys($clique);
+        }
+
+        return $cliques;
+    }
+
+    /**************************************************
+     * This is the initial attempt for forming groups by Willie Cheong 
+     * Didn't know the general name for this problem was the "Maximal Cliques" then
+     * Super brute force approach, highly unrecommended for any serious processing */
     public function clusterPairsToGroups($similarPairs) {    
         $outputGroups = array();
         $nodes = $this->getUniqueValues($similarPairs);
