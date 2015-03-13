@@ -19,6 +19,7 @@ return array(
 			"sap",
 		),
 		"Firefox OS" => array(
+			"bt",
 			"keypad",
 			"keyboard",
 			"bluetooth",
