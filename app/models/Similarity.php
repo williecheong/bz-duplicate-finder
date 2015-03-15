@@ -56,7 +56,7 @@ class Similarity {
         $shorterWord = $wordA;
         $longerWord = $wordB;
 
-        if (count($wordA) > count($wordB)) {
+        if (strlen($wordA) > strlen($wordB)) {
             $shorterWord = $wordB;
         }
 
