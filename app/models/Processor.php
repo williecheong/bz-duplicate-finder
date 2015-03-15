@@ -50,6 +50,10 @@ class Processor { // This is obviously the core natural language processor class
     public function tokenization( $inputString ) {
         $output = $inputString;
 
+        // Identifying custom keywords that may be jargons
+        $customJargons = array();
+        
+
         $output = str_replace("(", " ", $output);
         $output = str_replace("{", " ", $output);
         $output = str_replace("}", " ", $output);
@@ -61,25 +65,36 @@ class Processor { // This is obviously the core natural language processor class
         $output = str_replace("#", " ", $output);
         $output = str_replace("/", " ", $output);
         $output = str_replace(",", " ", $output);
-        $output = str_replace(".", " ", $output);
         $output = str_replace("!", " ", $output);
         $output = str_replace("?", " ", $output);
-        $output = str_replace("-", " ", $output);
         $output = str_replace("_", " ", $output);
         $output = str_replace("~", " ", $output);
         $output = str_replace("\\", " ", $output);
         $output = str_replace("\"", " ", $output);
 
+        // Remove only full stops.
+        $output = rtrim($output, '.');
+        $output = str_replace(". ", " ", $output);
+
+
         $output = strtolower($output);
-
         $output = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $output);
+        $output = explode(' ', $output);   
 
-        return explode(' ', $output);              
+        // Identifying custom keywords that may be jargons
+        $output = $this->identifyCustomJargons($output);
+
+        return $output;
     }
 
     public function stopWordsRemoval( $tokens, $bug ) {
         $output = array();
         foreach ( $tokens as $token ) {
+            if ( $this->jargons->isJargonOf($token, "?") ) {
+                $output[] = $token;
+                continue;
+            }
+
             if ( $this->jargons->isJargonOf($token, "*") ) {
                 $output[] = $token;
                 continue;
@@ -110,6 +125,10 @@ class Processor { // This is obviously the core natural language processor class
     public function spellCheck( $tokens, $bug ) {
         if (isset($this->pspell_link)) {
             foreach ($tokens as $key => $token) {
+                if ( $this->jargons->isJargonOf($token, "?") ) {
+                    continue;
+                }
+
                 if ( $this->jargons->isJargonOf($token, "*") ) {
                     continue;
                 }
@@ -135,5 +154,25 @@ class Processor { // This is obviously the core natural language processor class
 
     public function synonymReplacement( $tokens, $bug ) {
         return $tokens;
+    }
+
+
+    private function identifyCustomJargons($arrayOfTokens) {
+        $output = array();
+        foreach($arrayOfTokens as $key => $word) {
+            if (!str_contains($word, '-')) {
+                // This is a normal word, include it in tokens and do nothing more
+                $output[] = $word;
+                continue;
+            }
+
+            if (preg_match('/^([a-z]+(?:-[a-z]+)?)$/i', $word, $matches)) {
+                // Include this dashed word in our custom jargons and add it into tokens
+                $this->jargons->addJargon($word, '?');
+                $output[] = $word;
+            }
+        }
+
+        return $output;
     }
 }
