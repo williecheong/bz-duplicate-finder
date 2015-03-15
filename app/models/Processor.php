@@ -170,6 +170,12 @@ class Processor { // This is obviously the core natural language processor class
                 // Include this dashed word in our custom jargons and add it into tokens
                 $this->jargons->addJargon($word, '?');
                 $output[] = $word;
+                continue;
+            }
+
+            if (str_contains($word, '.')) {
+                $output[] = $word;
+                continue;
             }
         }
 
