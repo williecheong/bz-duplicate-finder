@@ -50,6 +50,9 @@ class Similarity {
     }
 
     public function similarWords($wordA, $wordB) {
+        $wordA = strtolower($wordA);
+        $wordB = strtolower($wordB);
+
         $shorterWord = $wordA;
         $longerWord = $wordB;
 
