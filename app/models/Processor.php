@@ -161,7 +161,9 @@ class Processor { // This is obviously the core natural language processor class
         $output = array();
         foreach($arrayOfTokens as $key => $word) {
             if (!str_contains($word, '-')) {
-                // This is a normal word, include it in tokens and do nothing more
+                if (str_contains($word, '.')) {
+                    $this->jargons->addJargon($word, '?');
+                }
                 $output[] = $word;
                 continue;
             }
@@ -169,11 +171,6 @@ class Processor { // This is obviously the core natural language processor class
             if (preg_match('/^([a-z]+(?:-[a-z]+)?)$/i', $word, $matches)) {
                 // Include this dashed word in our custom jargons and add it into tokens
                 $this->jargons->addJargon($word, '?');
-                $output[] = $word;
-                continue;
-            }
-
-            if (str_contains($word, '.')) {
                 $output[] = $word;
                 continue;
             }
