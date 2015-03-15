@@ -61,7 +61,7 @@ class Similarity {
             $longerWord = $wordA;
         }
 
-        return starts_with($longerWord, $shorterWord);
+        return str_contains($longerWord, $shorterWord);
     }
 }
 
