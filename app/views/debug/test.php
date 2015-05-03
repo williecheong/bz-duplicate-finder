@@ -143,9 +143,9 @@
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-animate.min.js"></script>
-        <script src="//dropbox.com/s/5xks0xxfz1mmqux/test_cases.js?dl=1"></script>    
         <script src="/assets/vendor/ng-timeago/ng-timeago.js"></script>
         <script src="/assets/vendor/ng-toaster/toaster.js"></script>
+        <script src="/assets/js/test_cases.js"></script>    
         <script src="/assets/js/debug_test.js"></script>
     </body>
 </html>
